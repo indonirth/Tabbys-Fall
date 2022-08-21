@@ -4,39 +4,43 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody rigidbody;
+    Rigidbody2D rigidbody;
     public SpriteRenderer spriteRenderer;
-    Animator animator;
+
+    [SerializeField] private float movementSpeed = 3.0f;
+
+    private Vector2 movement;
+    private Animator animator;
+    
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        Vector3 speed = new Vector3(x*5, 0 ,0) + Vector3.up * rigidbody.velocity.y;
-        rigidbody.velocity = speed;
-        if (x > 0) {
-            spriteRenderer.flipX = false;
-        } else if (x < 0) {
-            spriteRenderer.flipX = true;
+        if (Input.GetButtonDown("Jump")) {
+            float jumpVelocity = 5f;
+            rigidbody.velocity = Vector2.up * jumpVelocity;
         }
 
-        if (Input.GetButtonDown("Jump") && ifFloor()) {
-            rigidbody.velocity += Vector3.up * 10;
-        }
+        movement = new Vector2(Input.GetAxis("Horizontal"), 0).normalized;
+        animator.SetFloat("Speed", Mathf.Abs(movement.magnitude * movementSpeed));
 
-        if (x == 0) {
-            animator.SetFloat("Speed", 0);
-        } else {
-            animator.SetFloat("Speed", 1);
-        }
+        bool flipped = movement.x < 0;
+        this.transform.rotation = Quaternion.Euler(new Vector3(0f, flipped ? 180f : 0f, 0f));
     }
 
+    private void FixedUpdate() {
+        if (movement != Vector2.zero) { //(0,0)
+            var xMovement = movement.x * movementSpeed * Time.deltaTime;
+            this.transform.Translate(new Vector3(xMovement, 0), Space.World);
+        }
+    }
+    
     bool ifFloor()
     {
         RaycastHit collider_checker;
