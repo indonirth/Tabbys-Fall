@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
+    path: Assets/Scenes/INTRO MENU.unity
+    guid: 57200cc10186f46a89bc6dc11889863b
+  - enabled: 1
     path: Assets/TABBYS_FALL_CAVE.unity
     guid: e979dfa54faf249d69e8283a21b96e59
   m_configObjects: {}
